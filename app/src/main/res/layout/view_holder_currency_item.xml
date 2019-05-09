@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             android:orientation="horizontal"
+                                             android:padding="8dp"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/currency_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_width="60dp" android:layout_height="60dp"/>
+
+    <TextView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/currency_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+    <EditText
+            android:layout_gravity="center_vertical"
+            android:id="@+id/currency_value"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>
