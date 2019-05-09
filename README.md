@@ -1,0 +1,1 @@
+# kotlin_currency_stream_application
