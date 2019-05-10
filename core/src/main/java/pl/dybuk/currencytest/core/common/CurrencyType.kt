@@ -8,6 +8,8 @@ class CurrencyType(value: String) {
         val EUR = CurrencyType("EUR")
         val USD = CurrencyType("USD")
         val PLN = CurrencyType("PLN")
+        val GBP = CurrencyType("GBP")
+        val PHP = CurrencyType("PHP")
     }
 
     fun flagUrl() =

@@ -37,6 +37,10 @@ android {
         dev {
             dimension "default"
         }
+
+        rec {
+            dimension "default"
+        }
     }
 }
 

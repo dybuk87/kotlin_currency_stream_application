@@ -47,6 +47,11 @@ android {
             dimension "default"
             buildConfigField "String", CORE_VERSION, "\"DEV\""
         }
+
+        rec {
+            dimension "default"
+            buildConfigField "String", CORE_VERSION, "\"Rec\""
+        }
     }
 
 }
