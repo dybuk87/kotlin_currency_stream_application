@@ -121,3 +121,71 @@ class CurrencyServiceWithRecorder( private val currencyServiceRetrofit: Currency
 ```
 
 Recorder save data to external storage so permission have to be enabled from application manager (application does not ask for this permission because it is additional debug feature!)
+
+
+## Repository
+
+Exchange repository is application model for exchange, repository can be shared between activities. Each activity create own ViewModel that use ExchangeRepository.
+
+Exchange repository should be able to recover when wiped by android.
+
+- Repository should wrap one domain (DDD like)
+- Repository is also place for ACL (Anti Corruption Layer).
+- Repository can emits domain events
+
+Repository main tasks:
+
+Fetch data using injected DAL,
+Translate POJO into business objects (for example ExchangeRateDto -> ExchangeRateState) using Translators (ACL),
+This is place to add high level cache / flyweight patter
+
+## ExchangeRate
+
+This class handle updating currency rates for selected currency. Class use shorter interval when fetch is successful and longer on error.
+
+Exchange rate push data as state :
+
+```
+sealed class ExchangeRateState {
+    data class LoadingState(val currencyType: CurrencyType) : ExchangeRateState()
+
+    data class DataState(val currencyType: CurrencyType, val rates: List<Rate>) : ExchangeRateState()
+
+    data class ErrorState(val error: Throwable) : ExchangeRateState()
+}
+```
+
+Interval can be changed by simply sending interval value to BehaviorSubject:
+
+```
+intervalTime
+    .distinctUntilChanged()    
+    .switchMap { currentPeriod ->
+        Observable.interval(0, currentPeriod, TimeUnit.MILLISECONDS)
+    }
+    ...
+```
+
+Frontend UI will listen on
+```
+val rates: BehaviorSubject<ExchangeRateState> = BehaviorSubject.create()
+```
+
+And update UI depend on this state.
+
+
+# Application Module
+
+## Activity
+
+Activity create adapter and view model. View model listen to data from ExchangeRate and create CurrencyActivityViewState and distribute state by MutableLiveData to update adapter data.
+
+Activity show error in snackbar distributed in windows of 10 seconds or when previous error was different the latest.
+This prevent from spamming notification with short refresh on error interval. this is done by observer 
+
+```
+errorNotification.observeOn(AndroidSchedulers.mainThread())
+            .window(10, TimeUnit.SECONDS)
+            .switchMap { source -> source.distinctUntilChanged{ it -> it.localizedMessage } }
+            .subscribe { Snackbar.make(currency_list, it.localizedMessage, Snackbar.LENGTH_SHORT).show() }
+```
